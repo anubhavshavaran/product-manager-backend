@@ -1,0 +1,22 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Product {
+  id             Int      @id @default(autoincrement())
+  productName    String   @db.VarChar(255)
+  brand          String
+  type           String
+  warrantyPeriod Int
+  startDate      DateTime
+  endDate        DateTime
+  price          Float
+  serialNumber   String
+  purchaseDate   DateTime
+  createdAt      DateTime @default(now())
+}
