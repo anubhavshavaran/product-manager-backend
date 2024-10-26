@@ -1,6 +1,8 @@
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient } from '@prisma/client';
+import slugify from 'slugify';
+import { addMonthsToDate } from './../utils/date.js';
 
-const prisma = new PrismaClient()
+const prisma = new PrismaClient();
 
 const getAllProducts = async (req, res, next) => {
     const products = await prisma.product.findMany();
@@ -12,4 +14,42 @@ const getAllProducts = async (req, res, next) => {
         }
     });
 }
-export { getAllProducts };
+
+const createProduct = async (req, res, next) => {
+    const { productName,
+        brand,
+        type,
+        warrantyPeriod,
+        startDate,
+        price,
+        serialNumber,
+        purchaseDate
+    } = req.body;
+
+    const slug = slugify(productName.toLowerCase());
+    const endDate = addMonthsToDate(startDate, warrantyPeriod);
+
+    const product = await prisma.product.create({
+        data: {
+            slug,
+            productName,
+            brand,
+            type,
+            warrantyPeriod,
+            startDate,
+            endDate,
+            price,
+            serialNumber,
+            purchaseDate
+        }
+    });
+
+    res.status(201).json({
+        status: "success",
+        data: {
+            product
+        }
+    });
+}
+
+export { getAllProducts, createProduct };

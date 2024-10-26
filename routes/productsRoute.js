@@ -1,12 +1,12 @@
 import { Router } from 'express';
-import { getAllProducts } from '../controllers/productsController.js';
+import { createProduct, getAllProducts } from '../controllers/productsController.js';
 
 const productRouter = Router();
 
 productRouter
     .route("/")
     .get(getAllProducts)
-    // .post()
+    .post(createProduct);
 
 productRouter.route("/:id").get();
 
