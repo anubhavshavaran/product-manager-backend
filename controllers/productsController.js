@@ -52,4 +52,20 @@ const createProduct = async (req, res, next) => {
     });
 }
 
-export { getAllProducts, createProduct };
+const getProduct = async (req, res, next) => {
+    const { slug } = req.params;
+    const product = await prisma.product.findUnique({
+        where: {
+            slug
+        }
+    });
+
+    res.status(200).json({
+        status: 'success',
+        data: {
+            product
+        }
+    });
+}
+
+export { getAllProducts, createProduct, getProduct };
