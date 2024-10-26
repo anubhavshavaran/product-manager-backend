@@ -23,7 +23,8 @@ const createProduct = async (req, res, next) => {
         startDate,
         price,
         serialNumber,
-        purchaseDate
+        purchaseDate,
+        userId
     } = req.body;
 
     const slug = slugify(productName.toLowerCase());
@@ -40,7 +41,12 @@ const createProduct = async (req, res, next) => {
             endDate,
             price,
             serialNumber,
-            purchaseDate
+            purchaseDate,
+            user: {
+                connect: {
+                    id: userId
+                }
+            }
         }
     });
 
@@ -68,4 +74,19 @@ const getProduct = async (req, res, next) => {
     });
 }
 
-export { getAllProducts, createProduct, getProduct };
+const getUserProducts = async (req, res, next) => {
+    const products = await prisma.product.findMany({
+        where: {
+            userId: Number(req.params.userId)
+        }
+    });
+
+    res.status(200).json({
+        status: 'success',
+        data: {
+            products
+        }
+    });
+}
+
+export { getAllProducts, createProduct, getProduct, getUserProducts };
