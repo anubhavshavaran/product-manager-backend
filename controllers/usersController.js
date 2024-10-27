@@ -2,6 +2,7 @@ import { PrismaClient } from "@prisma/client";
 import bcryptjs from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { promisify } from "util";
+import catchAsync from "../utils/catchAsync.js";
 
 const prisma = new PrismaClient();
 
@@ -24,7 +25,7 @@ const sendToken = (res, user, successCode) => {
     });
 }
 
-const signinUser = async (req, res, next) => {
+const signinUser = catchAsync(async (req, res, next) => {
     const { email, password } = req.body;
 
     const user = await prisma.user.findUnique({
@@ -41,9 +42,9 @@ const signinUser = async (req, res, next) => {
     }
 
     sendToken(res, user, 200);
-}
+});
 
-const signupUser = async (req, res, next) => {
+const signupUser = catchAsync(async (req, res, next) => {
     const { fullname, email, password } = req.body;
 
     const user = await prisma.user.findUnique({
@@ -69,9 +70,9 @@ const signupUser = async (req, res, next) => {
     });
 
     sendToken(res, newUser, 201)
-}
+});
 
-const protect = async (req, res, next) => {
+const protect = catchAsync(async (req, res, next) => {
     const { authorization } = req.headers;
     let token;
 
@@ -103,6 +104,6 @@ const protect = async (req, res, next) => {
 
     req.user = user;
     next();
-}
+});
 
 export { signinUser, signupUser, protect };

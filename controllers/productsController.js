@@ -1,10 +1,11 @@
 import { PrismaClient } from '@prisma/client';
 import slugify from 'slugify';
 import { addMonthsToDate } from './../utils/date.js';
+import catchAsync from '../utils/catchAsync.js';
 
 const prisma = new PrismaClient();
 
-const getAllProducts = async (req, res, next) => {
+const getAllProducts = catchAsync(async (req, res, next) => {
     const products = await prisma.product.findMany();
 
     res.status(200).json({
@@ -13,9 +14,9 @@ const getAllProducts = async (req, res, next) => {
             products
         }
     });
-}
+});
 
-const createProduct = async (req, res, next) => {
+const createProduct = catchAsync(async (req, res, next) => {
     const { productName,
         brand,
         type,
@@ -56,9 +57,9 @@ const createProduct = async (req, res, next) => {
             product
         }
     });
-}
+});
 
-const getProduct = async (req, res, next) => {
+const getProduct = catchAsync(async (req, res, next) => {
     const { slug } = req.params;
     const product = await prisma.product.findUnique({
         where: {
@@ -72,9 +73,9 @@ const getProduct = async (req, res, next) => {
             product
         }
     });
-}
+});
 
-const getUserProducts = async (req, res, next) => {
+const getUserProducts = catchAsync(async (req, res, next) => {
     const products = await prisma.product.findMany({
         where: {
             userId: req.user.id
@@ -87,9 +88,9 @@ const getUserProducts = async (req, res, next) => {
             products
         }
     });
-}
+});
 
-const deleteProduct = async (req, res, next) => {
+const deleteProduct = catchAsync(async (req, res, next) => {
     await prisma.product.delete({
         where: {
             slug: req.params.slug
@@ -99,6 +100,6 @@ const deleteProduct = async (req, res, next) => {
     res.status(204).json({
         status: 'success',
     });
-}
+});
 
 export { getAllProducts, createProduct, getProduct, getUserProducts, deleteProduct };
