@@ -77,7 +77,7 @@ const getProduct = async (req, res, next) => {
 const getUserProducts = async (req, res, next) => {
     const products = await prisma.product.findMany({
         where: {
-            userId: Number(req.params.userId)
+            userId: req.user.id
         }
     });
 

@@ -1,6 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import bcryptjs from 'bcryptjs';
-import jwt from 'jsonwebtoken'
+import jwt from 'jsonwebtoken';
+import { promisify } from "util";
 
 const prisma = new PrismaClient();
 
@@ -66,8 +67,42 @@ const signupUser = async (req, res, next) => {
             password: encryptedPass
         }
     });
-    
+
     sendToken(res, newUser, 201)
 }
 
-export { signinUser, signupUser };
+const protect = async (req, res, next) => {
+    const { authorization } = req.headers;
+    let token;
+
+    if (authorization && authorization.startsWith("Bearer")) {
+        token = authorization.split(" ")[1];
+    }
+
+    if (!token) {
+        return res.status(401).json({
+            status: 'failure',
+            message: "Unauthorized Access"
+        });
+    }
+
+    const decoded =  await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+    
+    const user = await prisma.user.findUnique({
+        where: {
+            id: decoded.id
+        }
+    });
+
+    if (!user) {
+        return res.status(401).json({
+            status: 'failure',
+            message: "This user no longer exists"
+        });
+    }
+
+    req.user = user;
+    next();
+}
+
+export { signinUser, signupUser, protect };
