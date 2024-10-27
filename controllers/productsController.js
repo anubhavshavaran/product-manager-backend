@@ -89,4 +89,16 @@ const getUserProducts = async (req, res, next) => {
     });
 }
 
-export { getAllProducts, createProduct, getProduct, getUserProducts };
+const deleteProduct = async (req, res, next) => {
+    await prisma.product.delete({
+        where: {
+            slug: req.params.slug
+        }
+    });
+
+    res.status(204).json({
+        status: 'success',
+    });
+}
+
+export { getAllProducts, createProduct, getProduct, getUserProducts, deleteProduct };
