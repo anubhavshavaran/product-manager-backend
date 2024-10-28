@@ -24,8 +24,7 @@ const createProduct = catchAsync(async (req, res, next) => {
         startDate,
         price,
         serialNumber,
-        purchaseDate,
-        userId
+        purchaseDate
     } = req.body;
 
     const slug = slugify(productName.toLowerCase());
@@ -45,7 +44,7 @@ const createProduct = catchAsync(async (req, res, next) => {
             purchaseDate,
             user: {
                 connect: {
-                    id: userId
+                    id: req.user.id
                 }
             }
         }
