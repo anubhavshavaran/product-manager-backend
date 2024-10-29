@@ -8,11 +8,6 @@ This is the backend server for the Product Manager application, built with Node.
 - [Technologies Used](#technologies-used)
 - [Requirements](#requirements)
 - [Setup Instructions](#setup-instructions)
-- [Folder Structure](#folder-structure)
-- [Available Scripts](#available-scripts)
-- [API Documentation](#api-documentation)
-- [Additional Resources](#additional-resources)
-
 ---
 
 ## Project Overview
